@@ -1,15 +1,13 @@
-# Hexagonal Architecture — Simple Stock Flow
+# Hexagonal Architecture (Ports and Adapters) — Simple Stock Flow
 
-## 1. Ports and Adapters
-The architecture strictly separates the application core from the outside world via ports (interfaces) and adapters (implementations).
+## 1. Architectural Layers & Separation of Concerns
+The project strictly enforces Hexagonal Architecture to isolate core business logic from external frameworks, databases, and user interfaces:
 
-### Driving / Inbound Ports
-* Represented by use cases or application services that expose permitted operations in the system (e.g., record sale, update stock, query catalog).
-* Invoked by inbound adapters (ASP.NET Core Controllers / REST API).
-
-### Driven / Outbound Ports
-* Interfaces defined in the domain or application to abstract persistence and external services (e.g., product repositories, sale repositories).
-* Implemented in the infrastructure layer using Entity Framework Core connected to the PostgreSQL engine (`simple_stock_flow`).
-
-## 2. Dependency Rule
-Dependencies always point inwards. Infrastructure knows about application and domain; application knows about domain; **the domain knows nothing external**.
+* **Core Domain (`Domain`):** Contains pure entities, value objects, domain events, and business rules. It has zero external dependencies on frameworks, ORMs, or databases.
+* **Application Services (`Application`):** Orchestrates use cases and system workflows by applying domain rules without containing business logic itself.
+* **Ports (`Ports`):** 
+  * *Inbound Ports (Driving):* Interfaces defining use cases exposed to external drivers (e.g., REST controllers).
+  * *Outbound Ports (Driven):* Interfaces defining contracts for external systems (e.g., repository interfaces for database persistence).
+* **Adapters (`Adapters`):** 
+  * *Inbound Adapters:* REST API controllers, CLI commands, or web handlers.
+  * *Outbound Adapters:* PostgreSQL database implementations, JPA/Hibernate entities, or external logging tools.
